@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const config  = require('./../config/config');
 const crypto = require('crypto');
-
+const Words = require('../models/create_world');
 router.get('/info', (req, res) => {
     let user = Account.findOne({ username: req.query.user }, (err, user) => {
         if(err || !user) res.send('不存在的用户，或系统错误。');
@@ -145,6 +145,21 @@ router.post('/changepassword', (req, res) => {
 router.use('/logout', (req, res) => {
     req.logout();
     res.redirect('/');
+});
+router.get('/takin', (req, res) => {
+    res.render('user/takin', {
+        error: req.flash('error'),
+        success: req.flash('success'),
+        user: null
+    });
+});
+router.post('/takin', (req, res) => {
+    console.log(req.body);
+    let unit = req.body.unit;
+    let word = new Words({
+        word: unit
+    })
+    word.save();
 });
 
 module.exports = router;

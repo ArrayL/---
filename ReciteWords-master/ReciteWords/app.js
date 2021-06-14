@@ -8,7 +8,7 @@ const flash = require('express-flash');
 const mongoose = require('mongoose');
 const Account = require('./models/account');
 const config = require('./config/config');
-
+const Words = require('./models/create_world');
 const app = express();
 
 
