@@ -4,6 +4,13 @@ const datas = require('./../config/testdata');
 const Submission = require('./../models/submission');
 
 router.get('/', (req, res) => {
+    // console.log(req.query);
+    // console.log(req.session);
+    // console.log(req.user);
+    // console.log(req.query.unit);
+    // console.log(datas[req.query.unit]);
+    // console.log(req.query.unit);
+
     if(!req.user) {
         req.flash('success', '请登录后再开始测试。');
         res.redirect('/user/login');
@@ -14,6 +21,7 @@ router.get('/', (req, res) => {
         let queue = [];
         if(req.query.ignore == "ok") {
             for(let i=0; i<datas[req.query.unit].length; i++) {
+
                 if(datas[req.query.unit][i].Chinese.indexOf("△") != -1) continue;
                 queue.push(datas[req.query.unit][i]);
             }

@@ -7,6 +7,9 @@ const router = express.Router();
 const config  = require('./../config/config');
 const crypto = require('crypto');
 const Words = require('../models/create_world');
+const datas = require('./../config/testdata');
+const Submission = require('./../models/submission');
+const fs = require('fs');
 router.get('/info', (req, res) => {
     let user = Account.findOne({ username: req.query.user }, (err, user) => {
         if(err || !user) res.send('不存在的用户，或系统错误。');
@@ -150,16 +153,74 @@ router.get('/takin', (req, res) => {
     res.render('user/takin', {
         error: req.flash('error'),
         success: req.flash('success'),
-        user: null
+        user:req.user
     });
 });
 router.post('/takin', (req, res) => {
-    console.log(req.body);
-    let unit = req.body.unit;
+    let words = req.body.word;
+    let mean = req.body.mean;
+    let Pos = req.body.Pos;
     let word = new Words({
-        word: unit
+        word: words,
+        mean:mean,
+        Pos:Pos
     })
     word.save();
 });
+router.get('/select', (req, res) => {
+    res.render('user/select', {
+        user: req.user,
+        error: req.flash('error'),
+        success: req.flash('success')
+    });
+});
+router.post('/select', (req, res) => {
+    let flag=false;
+    let word = req.body.select;
+    // let files = fs.readdirSync('./sources');
+    // for(let i in files) {
+    //     let filePath = './sources/' + files[i];
+    //     let file = fs.readFileSync(filePath).toString().split('\n');
+    //     for(let i=0;i<=datas[file[0]].length;i++){
+    //            if(word == datas[file[0]][i].English) {
+    //              flag = true;
+    //              req.flash('success', datas[file][i].Chinese);
+    //              res.redirect('/user/select');
+    //     }
+    //     break;
+    // }
+    //     if(flag=true)
+    //         break;
+    //     }
+    // if(flag=false){
+    //     req.flash('success', "未找到单词");
+    //     res.redirect('/user/select');
+    // }
+    let files = fs.readdirSync('./sources');
+    for(let i in files) {
+        let filePath = './sources/' + files[i];
+        let file = fs.readFileSync(filePath).toString().split('\n');
+        let words = [];
+        // console.log(file);
+        // console.log(file.length);
+        for(let i=1; i<file.length; i++) {
+            let t = file[i].split('----');
+            if(word==t[0]){
+                req.flash('success', t[1]);
+                res.redirect('/user/select');
+                flag=true;
+                return;
+            }
+            if (flag==true)
+                break;
+        }
+        if (flag==true)
+            break;
+    }
+    if (flag==false) {
+        req.flash('error', "未找到单词");
+        res.redirect('/user/select');
+    }
 
+});
 module.exports = router;

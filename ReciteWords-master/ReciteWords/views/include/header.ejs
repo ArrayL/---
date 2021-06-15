@@ -21,6 +21,7 @@
                         <% if(user) {%>
                         <li class="nav-item"><a class="nav-link" href="/user/info?user=<%= user.username %>">个人中心</a></li>
                         <li class="nav-item"><a class="nav-link" href="/user/takin?user=<%= user.username %>">单词录入</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/user/select?user=<%= user.username %>">单词查询</a></li>
                         <% } %>
                 </ul>
         </div>
